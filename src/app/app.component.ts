@@ -58,7 +58,7 @@ import { RoleService, UserRole } from "./services/role.service";
         <div class="topbar-actions">
           <span class="role-label">
             <span class="role-dot"></span>
-            DEMO ROLE
+             ROLESs
           </span>
           <select
             class="role-select"
@@ -77,9 +77,8 @@ import { RoleService, UserRole } from "./services/role.service";
       </main>
 
       <footer class="site-footer">
-        <span
-          >DIMENSION C-137 &#x00B7; INTERDIMENSIONAL CHARACTER DATABASE</span
-        >
+        <span>
+           RICK AND MORT &#x00B7; CHARACTERS DATABASE</span>
         <span>
           DATA VIA
           <a [href]="api.websiteUrl" target="_blank" rel="noreferrer">
