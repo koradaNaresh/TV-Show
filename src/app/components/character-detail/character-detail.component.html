@@ -1,0 +1,118 @@
+<!-- Show a progress state until the character and episode records are ready. -->
+@if (loading()) {
+  <div class="detail-loading">
+    <span class="loading-ring"></span>
+    <p>Opening portal to character record...</p>
+  </div>
+} @else if (error()) {
+  <div class="state-panel error-panel" role="alert">
+    <span class="state-icon">!</span>
+    <h2>Record unavailable</h2>
+    <p>{{ error() }}</p>
+    <a class="button button-outline" [routerLink]="routes.characterListUrl">Back to catalog</a>
+  </div>
+} @else if (character(); as person) {
+  <!-- Character identity and location information. -->
+  <a class="back-link" [routerLink]="routes.characterListUrl">
+    <span>&#x2190;</span>
+    BACK TO THE CATALOG
+  </a>
+  <section class="detail-hero">
+    <div class="detail-avatar-wrap">
+      <img [src]="person.image" [alt]="person.name">
+      <span class="avatar-orbit orbit-a"></span>
+      <span class="avatar-orbit orbit-b"></span>
+    </div>
+    <div class="detail-intro">
+      <div class="eyebrow">
+        <span class="eyebrow-line"></span>
+        CHARACTER FILE &#x00B7; #{{ person.id.toString().padStart(idDigits, '0') }}
+      </div>
+      <h1>{{ person.name }}</h1>
+      <div class="detail-tags">
+        <span class="status-pill" [class]="statusPillClass(person.status)">
+          <i></i>
+          {{ person.status }}
+        </span>
+        <span>{{ person.species }}</span>
+        <span>{{ person.gender }}</span>
+      </div>
+      <div class="origin-grid">
+        <div>
+          <span class="data-label">LAST KNOWN LOCATION</span>
+          <strong>{{ person.location.name }}</strong>
+        </div>
+        <div>
+          <span class="data-label">ORIGIN</span>
+          <strong>{{ person.origin.name }}</strong>
+        </div>
+        <div>
+          <span class="data-label">EPISODE APPEARANCES</span>
+          <strong>{{ person.episode.length }} <small>episodes</small></strong>
+        </div>
+      </div>
+    </div>
+    <div class="detail-stamp" aria-hidden="true">
+      <span>INTERDIMENSIONAL</span>
+      <b>&#x2733;</b>
+      <span>ARCHIVE &#x00B7; 001</span>
+    </div>
+  </section>
+
+  <!-- Episode table with a client-side name filter. -->
+  <section class="episodes-section">
+    <div class="episodes-heading">
+      <div>
+        <div class="eyebrow">
+          <span class="eyebrow-line"></span>
+          ON-SCREEN HISTORY
+        </div>
+        <h2>Episode <span>log</span><sup>{{ episodes().length }}</sup></h2>
+      </div>
+      <label class="episode-search">
+        <img class="search-icon" src="/assets/icons/search.svg" alt="">
+        <input
+          type="search"
+          placeholder="Filter episodes by name..."
+          aria-label="Filter episodes by name"
+          [value]="episodeQuery()"
+          (input)="updateEpisodeQuery($event)"
+        >
+      </label>
+    </div>
+    @if (episodeLoading()) {
+      <div class="table-message">
+        <span class="loading-ring small-ring"></span>
+        Collecting episode records...
+      </div>
+    } @else if (filteredEpisodes().length === 0) {
+      <div class="table-message">{{ emptyEpisodeMessage() }}</div>
+    } @else {
+      <div class="episode-table-wrap">
+        <table class="episode-table">
+          <thead>
+            <tr>
+              <th>EPISODE NAME</th>
+              <th>AIR DATE</th>
+              <th>EPISODE</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (episode of filteredEpisodes(); track episode.id) {
+              <tr>
+                <td><span class="episode-title">{{ episode.name }}</span></td>
+                <td>{{ episode.air_date }}</td>
+                <td><span class="episode-code">{{ episode.episode }}</span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="table-footnote">
+        SHOWING {{ filteredEpisodes().length }} OF {{ episodes().length }} APPEARANCES
+        <span>&#x00B7;</span>
+        SORTED BY AIR ORDER
+      </p>
+    }
+  </section>
+}

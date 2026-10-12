@@ -1,0 +1,26 @@
+<!-- Explain why the current role cannot open the requested character page. -->
+<section class="denied-page" role="alert">
+  <div class="denied-symbol"><span>&#x26D4;</span></div>
+  <div class="eyebrow">
+    <span class="eyebrow-line"></span>
+    RESTRICTED DIMENSION
+  </div>
+  <h1>Access <span>denied.</span></h1>
+  <p>
+    Your current role, <strong>{{ roleService.role() }}</strong>, can browse the character catalog
+    but cannot open character episode files. Switch to Admin to continue.
+  </p>
+  <div class="denied-actions">
+    <button
+      type="button"
+      class="button button-primary"
+      (click)="switchToAdmin()"
+    >
+      Switch to Admin
+    </button>
+    <a class="button button-outline" [routerLink]="routes.characterListUrl">
+      Return to character list
+    </a>
+  </div>
+  <span class="denied-code">ERROR 403 &#x00B7; CLEARANCE LEVEL INSUFFICIENT</span>
+</section>

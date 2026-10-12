@@ -1,0 +1,31 @@
+/* Character profile and episode table layout for this route component. */
+.detail-hero {
+  min-height: 280px;
+  padding: 0 0 28px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  align-items: center;
+  gap: 35px;
+}
+
+.episode-table-wrap {
+  overflow-x: auto;
+}
+
+@media (max-width: 900px) {
+  .detail-hero {
+    grid-template-columns: 170px minmax(0, 1fr);
+    gap: 23px;
+  }
+}
+
+@media (max-width: 650px) {
+  .detail-hero {
+    min-height: 0;
+    padding: 8px 0 24px;
+    grid-template-columns: 95px minmax(0, 1fr);
+    align-items: start;
+    gap: 17px;
+  }
+}
