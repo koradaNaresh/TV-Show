@@ -2,7 +2,6 @@
   display: block;
 }
 
-/* Page-specific layout; shared colors and reusable button styles live in styles.css. */
 .denied-page {
   min-height: 68vh;
   padding: 64px 0;

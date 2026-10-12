@@ -1,20 +1,27 @@
-import { Component, OnDestroy, OnInit, Signal, computed, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Subscription, catchError, of, switchMap } from 'rxjs';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  Signal,
+  computed,
+  signal,
+} from "@angular/core";
+import { ActivatedRoute, RouterLink } from "@angular/router";
+import { Subscription, catchError, of, switchMap } from "rxjs";
 import {
   APP_ROUTES,
   APP_SETTINGS,
   CHARACTER_STATUS,
   STATUS_CLASS_NAMES,
-} from '../../constants/constants';
-import { Character, Episode } from '../../models/rick-and-morty.models';
-import { RickAndMortyApiService } from '../../services/rick-and-morty-api.service';
+} from "../../constants/constants";
+import { Character, Episode } from "../../models/rick-and-morty.models";
+import { RickAndMortyApiService } from "../../services/rick-and-morty-api.service";
 
 @Component({
   standalone: true,
   imports: [RouterLink],
-  templateUrl: './character-detail.component.html',
-  styleUrl: './character-detail.component.css',
+  templateUrl: "./character-detail.component.html",
+  styleUrl: "./character-detail.component.css",
 })
 export class CharacterDetailComponent implements OnInit, OnDestroy {
   readonly routes = APP_ROUTES;
@@ -24,15 +31,14 @@ export class CharacterDetailComponent implements OnInit, OnDestroy {
   readonly episodes = signal<Episode[]>([]);
   readonly loading = signal(true);
   readonly episodeLoading = signal(false);
-  readonly error = signal('');
-  readonly episodeQuery = signal('');
+  readonly error = signal("");
+  readonly episodeQuery = signal("");
   readonly filteredEpisodes: Signal<Episode[]>;
 
   constructor(
     private readonly route: ActivatedRoute,
     private readonly api: RickAndMortyApiService,
   ) {
-    // Recalculate the visible rows whenever the text or episode list changes.
     this.filteredEpisodes = computed(() => {
       const searchText = this.episodeQuery().trim().toLocaleLowerCase();
 
@@ -43,7 +49,6 @@ export class CharacterDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Read the route identifier and load its character followed by its episodes.
     this.subscription = this.route.paramMap
       .pipe(
         switchMap((routeParameters) => {
@@ -59,7 +64,7 @@ export class CharacterDetailComponent implements OnInit, OnDestroy {
             }),
             catchError(() => {
               this.error.set(
-                'The character or its episode records could not be found. Please return to the catalog and try again.',
+                "The character or its episode records could not be found. Please return to the catalog and try again.",
               );
               return of([] as Episode[]);
             }),
@@ -74,7 +79,6 @@ export class CharacterDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Stop listening to route changes when Angular removes this page.
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
@@ -83,10 +87,10 @@ export class CharacterDetailComponent implements OnInit, OnDestroy {
   private beginLoadingCharacter(): void {
     this.loading.set(true);
     this.episodeLoading.set(true);
-    this.error.set('');
+    this.error.set("");
     this.character.set(null);
     this.episodes.set([]);
-    this.episodeQuery.set('');
+    this.episodeQuery.set("");
   }
 
   statusClass(status: string): string {
@@ -107,18 +111,16 @@ export class CharacterDetailComponent implements OnInit, OnDestroy {
     return `${STATUS_CLASS_NAMES.detailPill} ${this.statusClass(status)}`;
   }
 
-  /** Reads the search input without using an untyped template cast. */
   updateEpisodeQuery(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     this.episodeQuery.set(inputElement.value);
   }
 
-  /** Returns the appropriate message when the episode table has no rows. */
   emptyEpisodeMessage(): string {
     if (this.episodeQuery().length > 0) {
-      return 'No episodes match that search.';
+      return "No episodes match that search.";
     }
 
-    return 'No episode records available.';
+    return "No episode records available.";
   }
 }

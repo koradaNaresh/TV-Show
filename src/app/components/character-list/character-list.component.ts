@@ -1,22 +1,23 @@
-import { Component, computed, Signal, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, computed, Signal, signal } from "@angular/core";
+import { RouterLink } from "@angular/router";
 import {
   APP_ROUTES,
   APP_SETTINGS,
   CHARACTER_STATUS,
   CHARACTER_VIEW_MODES,
   STATUS_CLASS_NAMES,
-} from '../../constants/constants';
-import { Character } from '../../models/rick-and-morty.models';
-import { CharacterStoreService } from '../../services/character-store.service';
+} from "../../constants/constants";
+import { Character } from "../../models/rick-and-morty.models";
+import { CharacterStoreService } from "../../services/character-store.service";
 
-type ViewMode = typeof CHARACTER_VIEW_MODES[keyof typeof CHARACTER_VIEW_MODES];
+type ViewMode =
+  (typeof CHARACTER_VIEW_MODES)[keyof typeof CHARACTER_VIEW_MODES];
 
 @Component({
   standalone: true,
   imports: [RouterLink],
-  templateUrl: './character-list.component.html',
-  styleUrl: './character-list.component.css',
+  templateUrl: "./character-list.component.html",
+  styleUrl: "./character-list.component.css",
 })
 export class CharacterListComponent {
   readonly viewModes = CHARACTER_VIEW_MODES;
@@ -31,7 +32,6 @@ export class CharacterListComponent {
   );
 
   constructor(readonly store: CharacterStoreService) {
-    // Keep the display sorted without changing the shared source array.
     this.filteredCharacters = computed(() => {
       const charactersForDisplay = [...this.store.characters()];
 
@@ -62,9 +62,9 @@ export class CharacterListComponent {
   /** Describes the count based on whether a search is currently active. */
   characterCountLabel(): string {
     if (this.store.searchTerm().length > 0) {
-      return 'matching characters';
+      return "matching characters";
     }
 
-    return 'known characters';
+    return "known characters";
   }
 }
