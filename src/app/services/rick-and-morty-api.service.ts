@@ -1,11 +1,19 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { EMPTY, forkJoin, Observable, of, throwError } from 'rxjs';
-import { catchError, expand, map, reduce } from 'rxjs/operators';
-import { API_CONSTANTS } from '../constants/index';
-import { ApiResponse, Character, Episode } from '../models/rick-and-morty.models';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpParams,
+} from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { EMPTY, forkJoin, Observable, of, throwError } from "rxjs";
+import { catchError, expand, map, reduce } from "rxjs/operators";
+import { API_CONSTANTS } from "../constants/index";
+import {
+  ApiResponse,
+  Character,
+  Episode,
+} from "../models/rick-and-morty.models";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class RickAndMortyApiService {
   constructor(private readonly http: HttpClient) {}
 
@@ -14,7 +22,7 @@ export class RickAndMortyApiService {
    * The API returns at most 20 characters per page and provides the next URL
    * in the response metadata when more pages are available.
    */
-  getAllCharacters(name: string = ''): Observable<Character[]> {
+  getAllCharacters(name: string = ""): Observable<Character[]> {
     let requestParameters = new HttpParams();
 
     if (name.length > 0) {
@@ -39,12 +47,9 @@ export class RickAndMortyApiService {
           return this.http.get<ApiResponse<Character>>(response.info.next);
         }),
         map((response) => response.results),
-        reduce(
-          (allCharacters, charactersOnPage) => {
-            return allCharacters.concat(charactersOnPage);
-          },
-          [] as Character[],
-        ),
+        reduce((allCharacters, charactersOnPage) => {
+          return allCharacters.concat(charactersOnPage);
+        }, [] as Character[]),
         catchError((error: HttpErrorResponse) => {
           // The API responds with 404 when a name search has no matches.
           if (error.status === 404) {
@@ -71,7 +76,7 @@ export class RickAndMortyApiService {
   getEpisodesForCharacter(character: Character): Observable<Episode[]> {
     const episodeIds: number[] = character.episode
       .map((episodeUrl: string) => {
-        const finalUrlPart = episodeUrl.split('/').pop();
+        const finalUrlPart = episodeUrl.split("/").pop();
         return Number(finalUrlPart);
       })
       .filter((episodeId: number) => {
@@ -92,9 +97,11 @@ export class RickAndMortyApiService {
 
     return forkJoin(episodeRequests).pipe(
       map((episodes: Episode[]) => {
-        return episodes.sort((firstEpisode: Episode, secondEpisode: Episode) => {
-          return firstEpisode.id - secondEpisode.id;
-        });
+        return episodes.sort(
+          (firstEpisode: Episode, secondEpisode: Episode) => {
+            return firstEpisode.id - secondEpisode.id;
+          },
+        );
       }),
     );
   }

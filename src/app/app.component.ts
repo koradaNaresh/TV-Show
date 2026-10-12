@@ -1,17 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
-import { filter } from 'rxjs';
-import { API_CONSTANTS, APP_ROUTES, ROLE_CONSTANTS } from './constants/constants';
-import { CharacterStoreService } from './services/character-store.service';
-import { RoleService, UserRole } from './services/role.service';
+import { Component, OnInit } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import {
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterOutlet,
+} from "@angular/router";
+import { filter } from "rxjs";
+import {
+  API_CONSTANTS,
+  APP_ROUTES,
+  ROLE_CONSTANTS,
+} from "./constants/constants";
+import { CharacterStoreService } from "./services/character-store.service";
+import { RoleService, UserRole } from "./services/role.service";
 
 @Component({
-  selector: 'app-root',
+  selector: "app-root",
   standalone: true,
   imports: [FormsModule, RouterLink, RouterOutlet],
   template: `
-    <!-- Shared header, routed page content, and attribution footer. -->
     <div class="app-shell">
       <header class="topbar">
         <a
@@ -28,13 +36,13 @@ import { RoleService, UserRole } from './services/role.service';
           </span>
           <span class="brand-divider"></span>
           <span class="brand-product">
-            CHARACTER<br>
+            CHARACTER<br />
             EXPLORER
           </span>
         </a>
 
         <label class="global-search" [class.search-active]="searchFocused">
-          <img class="search-icon" src="/assets/icons/search.svg" alt="">
+          <img class="search-icon" src="/assets/icons/search.svg" alt="" />
           <input
             type="search"
             placeholder="Search characters by name..."
@@ -43,7 +51,7 @@ import { RoleService, UserRole } from './services/role.service';
             (ngModelChange)="onSearch($event)"
             (focus)="searchFocused = true"
             (blur)="searchFocused = false"
-          >
+          />
           <kbd>&#x2318; K</kbd>
         </label>
 
@@ -69,7 +77,9 @@ import { RoleService, UserRole } from './services/role.service';
       </main>
 
       <footer class="site-footer">
-        <span>DIMENSION C-137 &#x00B7; INTERDIMENSIONAL CHARACTER DATABASE</span>
+        <span
+          >DIMENSION C-137 &#x00B7; INTERDIMENSIONAL CHARACTER DATABASE</span
+        >
         <span>
           DATA VIA
           <a [href]="api.websiteUrl" target="_blank" rel="noreferrer">
@@ -85,21 +95,18 @@ export class AppComponent implements OnInit {
   readonly roles = ROLE_CONSTANTS;
   readonly api = API_CONSTANTS;
 
-  // Shared services are injected through the constructor for clarity.
   constructor(
     readonly roleService: RoleService,
     private readonly store: CharacterStoreService,
     private readonly router: Router,
   ) {}
 
-  searchValue = '';
+  searchValue = "";
   searchFocused = false;
 
   ngOnInit(): void {
-    // Load the full catalog the first time the application opens.
-    this.store.search('');
+    this.store.search("");
 
-    // Keep the search field in sync when navigation returns to the catalog.
     this.router.events
       .pipe(
         filter((event): event is NavigationEnd => {
@@ -109,7 +116,8 @@ export class AppComponent implements OnInit {
       .subscribe((navigationEvent: NavigationEnd) => {
         const isCatalogRoute =
           navigationEvent.urlAfterRedirects === APP_ROUTES.characterListUrl;
-        const searchTextHasChanged = this.searchValue !== this.store.searchTerm();
+        const searchTextHasChanged =
+          this.searchValue !== this.store.searchTerm();
 
         if (isCatalogRoute && searchTextHasChanged) {
           this.searchValue = this.store.searchTerm();
@@ -117,7 +125,6 @@ export class AppComponent implements OnInit {
       });
   }
 
-  /** Updates the shared search results and returns users to the catalog. */
   onSearch(value: string): void {
     this.store.search(value);
 
@@ -133,7 +140,6 @@ export class AppComponent implements OnInit {
     }
   }
 
-  /** Applies the selected demo role and redirects viewers away from details. */
   changeRole(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     const selectedValue = selectElement.value;
